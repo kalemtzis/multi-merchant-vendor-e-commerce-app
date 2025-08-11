@@ -1,7 +1,8 @@
-const Page = () => {
+const Page = async () => {
+
   return (
     <div>
-      Homepage
+      Home
     </div>
   )
 }
