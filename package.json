@@ -2,17 +2,27 @@
   "name": "multi-merchant-vendor-e-commerce-app",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "generate:types": "payload generate:types",
+    "db:fresh": "payload migrate:fresh",
+    "db:seed": "payload run src/scripts/seed.ts"
   },
   "dependencies": {
+    "@payloadcms/db-mongodb": "^3.50.0",
+    "@payloadcms/next": "^3.50.0",
+    "@payloadcms/payload-cloud": "^3.50.0",
+    "@payloadcms/richtext-lexical": "^3.50.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "graphql": "^16.11.0",
     "lucide-react": "^0.539.0",
     "next": "15.4.6",
+    "payload": "^3.50.0",
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "tailwind-merge": "^3.3.1"
