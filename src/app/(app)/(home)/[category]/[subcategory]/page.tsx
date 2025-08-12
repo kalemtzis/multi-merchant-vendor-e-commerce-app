@@ -14,7 +14,7 @@ const Page = async ({ params }: Props) => {
   const { subcategory } = await params;
 
   const queryClient = getQueryClient();
-  void queryClient.prefetchQuery(
+  await queryClient.prefetchQuery(
     trpc.products.getMany.queryOptions({
       category: subcategory,
     })
