@@ -1,7 +1,8 @@
 import { baseProcedure, createTRPCRouter } from "@/trpc/init";
 import { TRPCError } from "@trpc/server";
-import { cookies, headers as getHeaders } from "next/headers";
-import { z } from "zod";
+import { headers as getHeaders } from "next/headers";
+import { loginSchema, registerSchema } from "../schemas";
+import { generateAuthCookie } from "../utils";
 
 export const authRouter = createTRPCRouter({
   session: baseProcedure.query(async ({ ctx }) => {
@@ -12,32 +13,27 @@ export const authRouter = createTRPCRouter({
     return session;
   }),
 
-  logout: baseProcedure.mutation(async ({ ctx }) => {
-    const cookieStore = await cookies();
-    cookieStore.delete(`${ctx.db.config.cookiePrefix}-token`);
-  }),
-
   register: baseProcedure
-    .input(
-      z.object({
-        email: z.email(),
-        passward: z.string().min(3),
-        username: z
-          .string()
-          .min(3, "Username must be at least 3 characters")
-          .max(30, "Username must be less than 30 characters")
-          .regex(
-            /^[a-z0-9][a-z0-9]*[a-z0-9]/,
-            "Username can only contain lowercase letters, numbers and hypens. It must start and end with a letter or a number"
-          )
-          .refine(
-            (val) => !val.includes("--"),
-            "Username cannot contain consecutive hyphens"
-          )
-          .transform((val) => val.toLowerCase()),
-      })
-    )
+    .input(registerSchema)
     .mutation(async ({ input, ctx }) => {
+      const existingData = await ctx.db.find({
+        collection: "users",
+        limit: 1,
+        where: {
+          username: {
+            equals: input.username,
+          },
+        },
+      });
+
+      const existingUser = existingData.docs[0];
+
+      if (existingUser)
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Username already taken",
+        });
+
       await ctx.db.create({
         collection: "users",
         data: { ...input },
@@ -47,7 +43,7 @@ export const authRouter = createTRPCRouter({
         collection: "users",
         data: {
           email: input.email,
-          password: input.passward,
+          password: input.password,
         },
       });
 
@@ -57,42 +53,29 @@ export const authRouter = createTRPCRouter({
           message: "Failed to login",
         });
 
-      const cookieStore = await cookies();
-      cookieStore.set({
-        name: `${ctx.db.config.cookiePrefix}-token`,
+      await generateAuthCookie({
+        prefix: ctx.db.config.cookiePrefix,
         value: data.token,
-        httpOnly: true,
-        path: "/",
       });
     }),
 
-  login: baseProcedure
-    .input(
-      z.object({
-        email: z.email(),
-        password: z.string(),
-      })
-    )
-    .mutation(async ({ input, ctx }) => {
-      const data = await ctx.db.login({
-        collection: "users",
-        data: { ...input },
+  login: baseProcedure.input(loginSchema).mutation(async ({ input, ctx }) => {
+    const data = await ctx.db.login({
+      collection: "users",
+      data: { ...input },
+    });
+
+    if (!data.token)
+      throw new TRPCError({
+        code: "UNAUTHORIZED",
+        message: "Failed to login",
       });
 
-      if (!data.token)
-        throw new TRPCError({
-          code: "UNAUTHORIZED",
-          message: "Failed to login",
-        });
+    await generateAuthCookie({
+      prefix: ctx.db.config.cookiePrefix,
+      value: data.token,
+    });
 
-      const cookieStore = await cookies();
-      cookieStore.set({
-        name: `${ctx.db.config.cookiePrefix}-token`,
-        value: data.token,
-        httpOnly: true,
-        path: "/",
-      });
-
-      return data;
-    }),
+    return data;
+  }),
 });
