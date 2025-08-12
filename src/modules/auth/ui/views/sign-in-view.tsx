@@ -1,7 +1,7 @@
 "use client";
 
 import { useForm } from "react-hook-form";
-import z from "zod";
+import { z } from "zod";
 import { loginSchema, registerSchema } from "../../schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
