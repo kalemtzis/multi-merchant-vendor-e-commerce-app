@@ -45,9 +45,13 @@ const CategoriesSidebar = ({ open, onOpenChange }: Props) => {
           </SheetHeader>
 
           <div className="flex flex-col items-start justify-center gap-8 pl-2 border-b pb-4 overflow-y-auto">
-          
             {categories?.map((category) => (
-              <Link href={`/${category.slug}`} className="w-full pr-2" key={category.slug}>
+              <Link
+                href={`/${category.slug}`}
+                className="w-full pr-2"
+                key={category.slug}
+                onClick={() => onOpenChange(false)}
+              >
                 <div className="flex justify-between items-center">
                   <span className="text-lg text-black">{category.name}</span>
                   {category.subcategories.length > 0 && <ArrowRightIcon />}
