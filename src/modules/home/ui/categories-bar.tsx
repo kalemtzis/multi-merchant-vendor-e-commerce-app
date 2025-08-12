@@ -10,10 +10,10 @@ import CategoriesSidebar from "./categories-sidebar";
 import { ListFilterIcon } from "lucide-react";
 
 interface Props {
-  data: Category[]
+  data: Category[];
 }
 
-const CategoriesBar = ({data}: Props) => {
+const CategoriesBar = ({ data }: Props) => {
   const [isAnyHovered, setIsAnyHovered] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [visibleCount, setVisibleCount] = useState(data.length);
@@ -56,7 +56,7 @@ const CategoriesBar = ({data}: Props) => {
 
     for (const item of items) {
       const itemWidth = (item as HTMLElement).offsetWidth;
-      
+
       if (totalWidth + itemWidth > availableWidth) {
         break;
       }
@@ -72,13 +72,17 @@ const CategoriesBar = ({data}: Props) => {
     // Initial calculation with multiple attempts to ensure DOM is ready
     let attempts = 0;
     const maxAttempts = 5;
-    
+
     const attemptCalculation = () => {
       if (attempts >= maxAttempts) {
-        console.warn('Failed to calculate visible categories after', maxAttempts, 'attempts');
+        console.warn(
+          "Failed to calculate visible categories after",
+          maxAttempts,
+          "attempts"
+        );
         return;
       }
-      
+
       if (containerRef.current && measureRef.current && viewAllRef.current) {
         calculateVisible();
       } else {
@@ -94,7 +98,7 @@ const CategoriesBar = ({data}: Props) => {
       // Debounce resize events
       setTimeout(calculateVisible, 50);
     });
-    
+
     if (containerRef.current) {
       resizeObserver.observe(containerRef.current);
     }
@@ -103,12 +107,12 @@ const CategoriesBar = ({data}: Props) => {
     const handleResize = () => {
       setTimeout(calculateVisible, 50);
     };
-    
-    window.addEventListener('resize', handleResize);
+
+    window.addEventListener("resize", handleResize);
 
     return () => {
       resizeObserver.disconnect();
-      window.removeEventListener('resize', handleResize);
+      window.removeEventListener("resize", handleResize);
     };
   }, [data, calculateVisible]);
 
@@ -128,10 +132,12 @@ const CategoriesBar = ({data}: Props) => {
         }}
         ref={measureRef}
       >
+        {/* TODO: Hardcoded All button */}
+
         {data.map((category) => (
-          <div key={category.id} className="shrink-0">
+          <div key={category.id}>
             <DropdownCategoryMenu
-              category={(category as Category)}
+              category={category as Category}
               isActive={activeCategory === category.slug}
               isNavigationHovered={false}
             />
@@ -146,22 +152,24 @@ const CategoriesBar = ({data}: Props) => {
         ref={containerRef}
       >
         {data.slice(0, visibleCount).map((category) => (
-          <div key={category.id} className="shrink-0">
+          <div key={category.id}>
             <DropdownCategoryMenu
-              category={(category as Category)}
+              category={category as Category}
               isActive={activeCategory === category.slug}
               isNavigationHovered={isAnyHovered}
             />
           </div>
         ))}
 
-        <div className="shrink-0" ref={viewAllRef}>
+        <div ref={viewAllRef}>
           <Button
+            size="sm"
+            variant="elevated"
             className={cn(
-              "h-11 px-4 bg-transparent border-transparent rounded-full hover:bg-white hover:border-primary text-black",
+              "hover:bg-white bg-transparent border-transparent rounded-full text-black",
               isActiveCategoryHidden &&
                 !isAnyHovered &&
-                "bg-white border-primary"
+                "bg-white border-black"
             )}
             onClick={() => setIsSidebarOpen(true)}
           >

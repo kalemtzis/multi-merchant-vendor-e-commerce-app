@@ -5,7 +5,7 @@ export const categoriesRouter = createTRPCRouter({
   getMany: baseProcedure.query(async ({ ctx }) => {
     const data = await ctx.db.find({
       collection: "categories",
-      depth: 2,
+      depth: 1,
       pagination: false,
       where: {
         parent: {
