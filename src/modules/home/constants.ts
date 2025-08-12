@@ -9,7 +9,7 @@ export const navItems = [
   },
   {
     name: 'Pricing',
-    href: '/pricing',
+    href: '/price',
   },
   {
     name: 'Blog',

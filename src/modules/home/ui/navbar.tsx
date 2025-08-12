@@ -22,7 +22,7 @@ const Navbar = () => {
   return (
     <nav className="flex items-center justify-between border-b border-black">
       {/* Logo */}
-      <Button asChild>
+      <Button asChild variant="ghost">
         <Link href="/">
           <span className={cn("text-2xl font-bold", poppins.className)}>
             Eshop
@@ -31,28 +31,31 @@ const Navbar = () => {
       </Button>
 
       {/* Nav Items */}
-      <div className="flex items-center justify-center gap-8">
-        {navItems.map((item) => (
+      <div className="hidden lg:flex items-center justify-center gap-8">
+        {navItems.map(({ href, name }) => (
           <Link
-            key={item.href}
-            href={item.href}
-            className="hover:border hover:border-black px-2 py-1 rounded-md"
+            key={href}
+            href={href}
+            className={cn(
+              "px-2 rounded-full hover:shadow-black hover:shadow-sm",
+              pathname === href && "shadow-black shadow-sm"
+            )}
           >
-            {item.name}
+            {name}
           </Link>
         ))}
       </div>
 
       {/* Buttons */}
       {session.data?.user ? (
-        <div className="hidden lg:flex">
+        <div className="hidden lg:flex h-full">
           <Button
             asChild
             variant="secondary"
             className="border-l border-t-0 border-b-0 border-r-0 px-12 h-full rounded-none bg-black text-white hover:bg-pink-400 hover:text-black transition-colors text-lg"
           >
             <Link href="/admin">
-            {/* TODO: After you logout from payload backend ui you dont redirect to the homepage but in the payload sign in page */}
+              {/* TODO: After you logout from payload backend ui you dont redirect to the homepage but in the payload sign in page */}
               Dashboard
             </Link>
           </Button>

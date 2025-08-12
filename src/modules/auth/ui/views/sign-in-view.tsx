@@ -59,7 +59,7 @@ const SignInView = () => {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-5">
       {/* Form */}
-      <div className="bg-[#F4F4F0] h-screen w-full lg:col-span-3 overflow-y-auto">
+      <div className="bg-[#F4F4F0] min-h-screen w-full lg:col-span-2 overflow-y-auto">
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
@@ -132,7 +132,7 @@ const SignInView = () => {
 
       {/* Background Image */}
       <div
-        className="h-screen w-full lg:col-span-2 hidden lg:block"
+        className="h-screen w-full lg:col-span-3 hidden lg:block"
         style={{
           backgroundImage: "url('/images/bg_image.png')",
           backgroundSize: "cover",
