@@ -10,13 +10,13 @@ import CategoriesSidebar from "./categories-sidebar";
 import { ListFilterIcon } from "lucide-react";
 
 interface Props {
-  categories: Category[];
+  data: Category[]
 }
 
-const CategoriesBar = ({ categories }: Props) => {
+const CategoriesBar = ({data}: Props) => {
   const [isAnyHovered, setIsAnyHovered] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [visibleCount, setVisibleCount] = useState(categories.length);
+  const [visibleCount, setVisibleCount] = useState(data.length);
 
   const containerRef = useRef<HTMLDivElement>(null);
   const measureRef = useRef<HTMLDivElement>(null);
@@ -27,7 +27,7 @@ const CategoriesBar = ({ categories }: Props) => {
   const categoryParam = params.category as string | undefined;
   const activeCategory = categoryParam || "all";
 
-  const activeCategoryIndex = categories?.findIndex(
+  const activeCategoryIndex = data?.findIndex(
     (cat) => cat.slug === activeCategory
   );
   const isActiveCategoryHidden =
@@ -110,7 +110,7 @@ const CategoriesBar = ({ categories }: Props) => {
       resizeObserver.disconnect();
       window.removeEventListener('resize', handleResize);
     };
-  }, [categories, calculateVisible]);
+  }, [data, calculateVisible]);
 
   return (
     <div className="relative w-full">
@@ -128,10 +128,10 @@ const CategoriesBar = ({ categories }: Props) => {
         }}
         ref={measureRef}
       >
-        {categories.map((category) => (
+        {data.map((category) => (
           <div key={category.id} className="shrink-0">
             <DropdownCategoryMenu
-              category={category}
+              category={(category as Category)}
               isActive={activeCategory === category.slug}
               isNavigationHovered={false}
             />
@@ -140,15 +140,15 @@ const CategoriesBar = ({ categories }: Props) => {
       </div>
 
       <div
-        className="flex flex-nowrap items-center gap-2 overflow-hidden"
+        className="flex items-center justify-center gap-2 overflow-hidden"
         onMouseEnter={() => setIsAnyHovered(true)}
         onMouseLeave={() => setIsAnyHovered(false)}
         ref={containerRef}
       >
-        {categories.slice(0, visibleCount).map((category) => (
+        {data.slice(0, visibleCount).map((category) => (
           <div key={category.id} className="shrink-0">
             <DropdownCategoryMenu
-              category={category}
+              category={(category as Category)}
               isActive={activeCategory === category.slug}
               isNavigationHovered={isAnyHovered}
             />

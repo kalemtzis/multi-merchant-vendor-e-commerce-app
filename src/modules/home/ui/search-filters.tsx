@@ -29,14 +29,14 @@ export const SearchFilters = () => {
 
   return (
     <div
-      className="px-4 lg:px-12 py-8 border-b flex flex-col gap-4 w-full"
+      className="px-4 lg:px-12 py-4 border-b flex flex-col gap-4 w-full"
       style={{
         backgroundColor: activeCategoryColor,
       }}
     >
       <SearchInput />
       <div className="hidden lg:block">
-        <CategoriesBar categories={data as Category[]} />
+        <CategoriesBar data={(data as Category[])} />
       </div>
       <BreadcrumbNav categoryName={activeCategoryName} category={activeCategory} subcategoryName={activeSubcategoryName} />
     </div>

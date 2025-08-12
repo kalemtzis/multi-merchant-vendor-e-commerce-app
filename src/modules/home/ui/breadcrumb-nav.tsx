@@ -41,7 +41,7 @@ const BreadcrumbNav = ({ category, categoryName, subcategoryName }: Props) => {
           </>
         ) : (
           <BreadcrumbItem>
-            <BreadcrumbPage className="text-xl font-medium">
+            <BreadcrumbPage className="text-sm font-medium">
               {categoryName}
             </BreadcrumbPage>
           </BreadcrumbItem>

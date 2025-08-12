@@ -64,7 +64,7 @@ const DropdownCategoryMenu = ({
         <Link href={`/${category.slug}`}>{category.name}</Link>
       </Button>
 
-      {subcategories.length > 0 && open && (
+      {category.subcategories && isNavigationHovered && (
         <div
           className="absolute top-full left-0 mt-2 min-w-[200px] p-2 rounded-md shadow-lg border z-50 bg-white"
           style={{
