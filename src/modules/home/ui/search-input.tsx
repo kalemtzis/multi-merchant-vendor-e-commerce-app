@@ -33,7 +33,7 @@ const SearchInput = ({ disabled }: Props) => {
       {/* View all button */}
       <Button
         variant="outline"
-        className="size-12 shrink-0 flex lg:hidden"
+        className="w-9 h-9 shrink-0 flex lg:hidden"
         onClick={() => setIsSidebarOpen(true)}
       >
         <ListFilterIcon />
@@ -41,7 +41,7 @@ const SearchInput = ({ disabled }: Props) => {
 
       {/* Library button */}
       {session?.user && (
-        <Button variant='outline' asChild>
+        <Button variant="outline" asChild>
           {/* TODO: Create library page */}
           <Link href="/library">
             <BookmarkCheckIcon />
