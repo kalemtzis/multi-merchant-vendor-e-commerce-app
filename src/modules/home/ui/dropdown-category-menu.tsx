@@ -1,6 +1,5 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -38,18 +37,16 @@ const DropdownCategoryMenu = ({
 
   return (
     <div
-      className="p-2"
+      className="my-2"
+      ref={dropdownRef}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
-      ref={dropdownRef}
     >
       <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
         <DropdownMenuTrigger asChild>
-          <Button
-            asChild
-            variant="ghost"
+          <div
             className={cn(
-              "px-4 bg-transparent border-transparent rounded-full hover:text-black hover:border-black text-black",
+              "bg-transparent border-transparent rounded-full hover:text-black hover:border-black text-black p-2",
               isActive && !isNavigationHovered && "bg-white border-black",
               isOpen &&
                 "bg-white border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] -translate-x-[4px] -translate-y-[4px]"
@@ -58,12 +55,12 @@ const DropdownCategoryMenu = ({
             <Link href={`/${category.slug === "all" ? "" : category.slug}`}>
               {category.name}
             </Link>
-          </Button>
+          </div>
         </DropdownMenuTrigger>
 
         {category.subcategories && subcategories.length > 0 && (
           <DropdownMenuContent
-            className="mt-4"
+            className="mt-2"
             style={{
               backgroundColor: category.color || "#F5F5F5",
             }}
