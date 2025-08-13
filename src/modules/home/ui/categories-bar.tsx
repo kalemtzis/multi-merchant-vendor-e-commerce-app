@@ -11,7 +11,7 @@ import { ListFilterIcon } from "lucide-react";
 import { CategoriesGetManyOutput } from "@/modules/categories/types";
 
 interface Props {
-  data: Category[];
+  data: CategoriesGetManyOutput;
 }
 
 const CategoriesBar = ({ data }: Props) => {
@@ -34,88 +34,36 @@ const CategoriesBar = ({ data }: Props) => {
   const isActiveCategoryHidden =
     activeCategoryIndex >= visibleCount && activeCategoryIndex !== -1;
 
-  const calculateVisible = useCallback(() => {
-    if (!containerRef.current || !measureRef.current || !viewAllRef.current) {
-      return;
-    }
-
-    // Force a reflow to ensure accurate measurements
-    containerRef.current.offsetHeight;
-
-    const containerWidth = containerRef.current.offsetWidth;
-    const viewAllWidth = viewAllRef.current.offsetWidth;
-    const availableWidth = containerWidth - viewAllWidth - 32; // Add more padding for safety
-
-    if (availableWidth <= 0) {
-      setVisibleCount(1);
-      return;
-    }
-
-    const items = Array.from(measureRef.current.children);
-    let totalWidth = 0;
-    let visible = 0;
-
-    for (const item of items) {
-      const itemWidth = (item as HTMLElement).offsetWidth;
-
-      if (totalWidth + itemWidth > availableWidth) {
-        break;
-      }
-      totalWidth += itemWidth;
-      visible++;
-    }
-
-    // Ensure at least one category is visible
-    setVisibleCount(Math.max(1, visible));
-  }, []);
-
   useEffect(() => {
-    // Initial calculation with multiple attempts to ensure DOM is ready
-    let attempts = 0;
-    const maxAttempts = 5;
-
-    const attemptCalculation = () => {
-      if (attempts >= maxAttempts) {
-        console.warn(
-          "Failed to calculate visible categories after",
-          maxAttempts,
-          "attempts"
-        );
+    const calculateVisible = () => {
+      if (!containerRef.current || !measureRef.current || !viewAllRef.current)
         return;
+
+      const containerWidth = containerRef.current.offsetWidth;
+      const viewAllWidth = viewAllRef.current.offsetWidth;
+      const availableWidth = containerWidth - viewAllWidth;
+
+      const items = Array.from(measureRef.current.children);
+      let totalWidth = 0;
+      let visible = 0;
+
+      for (const item of items) {
+        const width = item.getBoundingClientRect().width;
+
+        if (totalWidth + width > availableWidth) break;
+
+        totalWidth += width;
+        visible++;
       }
 
-      if (containerRef.current && measureRef.current && viewAllRef.current) {
-        calculateVisible();
-      } else {
-        attempts++;
-        setTimeout(attemptCalculation, 100);
-      }
+      setVisibleCount(visible);
     };
 
-    attemptCalculation();
+    const resizeObserver = new ResizeObserver(calculateVisible);
+    resizeObserver.observe(containerRef.current!);
 
-    // Set up resize observer
-    const resizeObserver = new ResizeObserver(() => {
-      // Debounce resize events
-      setTimeout(calculateVisible, 50);
-    });
-
-    if (containerRef.current) {
-      resizeObserver.observe(containerRef.current);
-    }
-
-    // Also listen for window resize
-    const handleResize = () => {
-      setTimeout(calculateVisible, 50);
-    };
-
-    window.addEventListener("resize", handleResize);
-
-    return () => {
-      resizeObserver.disconnect();
-      window.removeEventListener("resize", handleResize);
-    };
-  }, [data, calculateVisible]);
+    return () => resizeObserver.disconnect()
+  }, [data.length]);
 
   return (
     <div className="relative w-full">
@@ -128,8 +76,7 @@ const CategoriesBar = ({ data }: Props) => {
         style={{
           position: "fixed",
           top: -9999,
-          left: -9999,
-          visibility: "hidden",
+          left: -9999,  
         }}
         ref={measureRef}
       >
@@ -147,13 +94,13 @@ const CategoriesBar = ({ data }: Props) => {
       </div>
 
       <div
-        className="flex items-center justify-center gap-2 overflow-hidden"
+        className="flex flex-nowrap items-center justify-center gap-2"
         onMouseEnter={() => setIsAnyHovered(true)}
         onMouseLeave={() => setIsAnyHovered(false)}
         ref={containerRef}
       >
         {data.slice(0, visibleCount).map((category) => (
-          <div key={category.id}>
+          <div key={category.id} className="shrink-0">
             <DropdownCategoryMenu
               category={category as CategoriesGetManyOutput[0]}
               isActive={activeCategory === category.slug}
@@ -162,15 +109,13 @@ const CategoriesBar = ({ data }: Props) => {
           </div>
         ))}
 
-        <div ref={viewAllRef}>
+        <div ref={viewAllRef} className="shrink-0">
           <Button
             size="sm"
             variant="elevated"
             className={cn(
               "hover:bg-white bg-transparent border-transparent rounded-full text-black",
-              isActiveCategoryHidden &&
-                !isAnyHovered &&
-                "bg-white border-black"
+              isActiveCategoryHidden && !isAnyHovered && "bg-white border-black"
             )}
             onClick={() => setIsSidebarOpen(true)}
           >
