@@ -8,6 +8,7 @@ import { Category } from "@/payload-types";
 import { useParams } from "next/navigation";
 import CategoriesSidebar from "./categories-sidebar";
 import { ListFilterIcon } from "lucide-react";
+import { CategoriesGetManyOutput } from "@/modules/categories/types";
 
 interface Props {
   data: Category[];
@@ -137,7 +138,7 @@ const CategoriesBar = ({ data }: Props) => {
         {data.map((category) => (
           <div key={category.id}>
             <DropdownCategoryMenu
-              category={category as Category}
+              category={category as CategoriesGetManyOutput[0]}
               isActive={activeCategory === category.slug}
               isNavigationHovered={false}
             />
@@ -154,7 +155,7 @@ const CategoriesBar = ({ data }: Props) => {
         {data.slice(0, visibleCount).map((category) => (
           <div key={category.id}>
             <DropdownCategoryMenu
-              category={category as Category}
+              category={category as CategoriesGetManyOutput[0]}
               isActive={activeCategory === category.slug}
               isNavigationHovered={isAnyHovered}
             />

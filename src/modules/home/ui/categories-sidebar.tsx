@@ -5,30 +5,63 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Sheet,
   SheetContent,
-  SheetDescription,
   SheetFooter,
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
+import { CategoriesGetManyOutput } from "@/modules/categories/types";
 import { useTRPC } from "@/trpc/client";
 import { useQuery } from "@tanstack/react-query";
-import { ArrowRightIcon } from "lucide-react";
+import { ChevronRightIcon, ChevronLeftIcon } from "lucide-react";
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
+import { useState } from "react";
 
 interface Props {
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
 
+// TODO: Fix to show subcategories propetly when click to a category
+
 const CategoriesSidebar = ({ open, onOpenChange }: Props) => {
   const trpc = useTRPC();
   const { data: categories } = useQuery(trpc.categories.getMany.queryOptions());
   const session = useQuery(trpc.auth.session.queryOptions());
 
+  const router = useRouter();
+
+  const [parentCategories, setParentCategories] =
+    useState<CategoriesGetManyOutput | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<
+    CategoriesGetManyOutput[0] | null
+  >(null);
+
+  const currentCategories = parentCategories ?? categories ?? [];
+
   const params = useParams();
   const categoryParam = params.category as string | undefined;
   const activeCategory = categories?.find((cat) => cat.slug === categoryParam);
+
+  const handleOpenChange = (open: boolean) => {
+    setSelectedCategory(null);
+    setParentCategories(null);
+    onOpenChange(open);
+  };
+
+  const handleCategoryClick = (category: CategoriesGetManyOutput[0]) => {
+    if (category.subcategories && category.subcategories.length > 0) {
+      setParentCategories(category.subcategories as CategoriesGetManyOutput);
+      setSelectedCategory(category);
+    } else {
+      if (parentCategories && selectedCategory) {
+        router.push(`/${selectedCategory.slug}/${category.slug}`);
+      } else {
+        router.push(`/${category.slug === "all" ? "" : category.slug}`);
+      }
+      handleOpenChange(false);
+    }
+  };
 
   return (
     <ScrollArea>
@@ -36,7 +69,7 @@ const CategoriesSidebar = ({ open, onOpenChange }: Props) => {
         <SheetContent
           side="left"
           style={{
-            backgroundColor: activeCategory?.color || "#F5F5F5",
+            backgroundColor: selectedCategory?.color || "#F5F5F5",
           }}
           className="w-full"
         >
@@ -44,19 +77,18 @@ const CategoriesSidebar = ({ open, onOpenChange }: Props) => {
             <SheetTitle>Categories</SheetTitle>
           </SheetHeader>
 
-          <div className="flex flex-col items-start justify-center gap-8 pl-2 border-b pb-4 overflow-y-auto">
-            {categories?.map((category) => (
-              <Link
-                href={`/${category.slug}`}
-                className="w-full pr-2"
+          <div className="flex w-full flex-col items-start justify-center gap-8 pl-2 border-b pb-4 overflow-y-auto">
+            {currentCategories?.map((category) => (
+              <div
+                className="w-full"
                 key={category.slug}
-                onClick={() => onOpenChange(false)}
+                onClick={() => handleCategoryClick(category)}
               >
                 <div className="flex justify-between items-center">
                   <span className="text-lg text-black">{category.name}</span>
-                  {category.subcategories.length > 0 && <ArrowRightIcon />}
+                  {category.subcategories.length > 0 && <ChevronRightIcon />}
                 </div>
-              </Link>
+              </div>
             ))}
           </div>
 
