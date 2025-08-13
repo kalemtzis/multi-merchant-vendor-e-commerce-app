@@ -20,7 +20,7 @@ const defaultTenantArrayField = tenantsArrayField({
 export const Users: CollectionConfig = {
   slug: "users",
   admin: {
-    useAsTitle: "email",
+    useAsTitle: "username",
   },
   auth: true,
   fields: [
