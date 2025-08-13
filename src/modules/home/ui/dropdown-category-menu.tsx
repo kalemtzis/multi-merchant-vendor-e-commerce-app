@@ -1,15 +1,11 @@
 "use client";
 
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { CategoriesGetManyOutput } from "@/modules/categories/types";
 import Link from "next/link";
 import { useState, useRef } from "react";
+import { SubcategoryMenu } from "./subcategory-menu";
 
 interface Props {
   category: CategoriesGetManyOutput[0];
@@ -33,48 +29,42 @@ const DropdownCategoryMenu = ({
 
   const onMouseLeave = () => setIsOpen(false);
 
-  const subcategories = category.subcategories || [];
-
   return (
     <div
-      className="my-2"
+      className="relative"
       ref={dropdownRef}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
     >
-      <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
-        <DropdownMenuTrigger asChild>
+      <div className="relative">
+        <Button
+          variant="elevated"
+          className={cn(
+            "px-2 bg-transparent border-transparent rounded-full hover:bg-white hover:border-black text-black",
+            isActive &&
+              !isNavigationHovered &&
+              "bg-white border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] -translate-x-[4px] -translate-y-[4px]"
+          )}
+        >
+          <Link href={`/${category.slug === "all" ? "" : category.slug}`}>
+            {category.name}
+          </Link>
+        </Button>
+
+        {category.subcategories && category.subcategories.length > 0 && (
           <div
             className={cn(
-              "bg-transparent border-transparent rounded-full hover:text-black hover:border-black text-black p-2",
-              isActive && !isNavigationHovered && "bg-white border-black",
-              isOpen &&
-                "bg-white border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] -translate-x-[4px] -translate-y-[4px]"
+              "opacity-0 absolute -bottom-3 w-0 h-0 border-l-[10px] border-r-[10px] border-b-[10px] border-l-transparent border-r-transparent border-b-black left-1/2 -translate-x-1/2",
+              isOpen && "opacity-100"
             )}
-          >
-            <Link href={`/${category.slug === "all" ? "" : category.slug}`}>
-              {category.name}
-            </Link>
-          </div>
-        </DropdownMenuTrigger>
-
-        {category.subcategories && subcategories.length > 0 && (
-          <DropdownMenuContent
-            className="mt-2"
-            style={{
-              backgroundColor: category.color || "#F5F5F5",
-            }}
-          >
-            {subcategories.map((sub) => (
-              <DropdownMenuItem asChild key={sub.id}>
-                <Link href={`/${category.slug}/${sub.slug}`}>
-                  <span className="underline">{sub.name}</span>
-                </Link>
-              </DropdownMenuItem>
-            ))}
-          </DropdownMenuContent>
+          ></div>
         )}
-      </DropdownMenu>
+      </div>
+
+      <SubcategoryMenu
+        category={category}
+        isOpen={isOpen}
+      />
     </div>
   );
 };

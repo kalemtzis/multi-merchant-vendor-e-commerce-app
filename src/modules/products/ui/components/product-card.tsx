@@ -63,7 +63,7 @@ export const ProductCard = ({
         <div className="p-4">
           <div className="relative px-2 py-1 border bg-pink-400 w-fit">
             <p className="text-sm font-medium">
-              {new Intl.NumberFormat("en-USD", {
+              {new Intl.NumberFormat("EUR", {
                 style: "currency",
                 currency: "EUR",
                 maximumFractionDigits: 0

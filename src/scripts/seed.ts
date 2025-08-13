@@ -1,3 +1,5 @@
+import { getPayload } from "payload";
+import configPromise from "@payload-config";
 import { payload } from "@/lib/payload";
 
 const categories = [
@@ -137,6 +139,30 @@ const categories = [
 ];
 
 const seed = async () => {
+  const adminTenant = await payload.create({
+    collection: "tenants",
+    data: {
+      name: "admin",
+      slug: "admin",
+      stripeAcountId: "admin",
+    },
+  });
+
+  await payload.create({
+    collection: "users",
+    data: {
+      email: "admin@demo.com",
+      password: "admin",
+      roles: ["super-admin"],
+      username: "admin",
+      tenants: [
+        {
+          tenant: adminTenant.id,
+        },
+      ],
+    },
+  });
+
   for (const category of categories) {
     const parentCategory = await payload.create({
       collection: "categories",

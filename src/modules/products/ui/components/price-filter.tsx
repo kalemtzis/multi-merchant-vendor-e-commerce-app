@@ -23,7 +23,7 @@ export const formatAsCurrency = (value: string) => {
 
   if (isNaN(numberValue)) return "";
 
-  return new Intl.NumberFormat("en-US", {
+  return new Intl.NumberFormat("EUR", {
     style: "currency",
     currency: "EUR",
     minimumFractionDigits: 0,
