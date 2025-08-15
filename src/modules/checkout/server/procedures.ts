@@ -37,6 +37,7 @@ export const checkoutRouter = createTRPCRouter({
           ],
         },
       });
+      
 
       if (products.totalDocs !== input.productIds.length)
         throw new TRPCError({
