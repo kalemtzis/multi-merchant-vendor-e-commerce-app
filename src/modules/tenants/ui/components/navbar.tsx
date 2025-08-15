@@ -5,7 +5,24 @@ import { useTRPC } from "@/trpc/client";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import Image from "next/image";
 import Link from "next/link";
+import dynamic from "next/dynamic";
+import { Button } from "@/components/ui/button";
+import { ShoppingCartIcon } from "lucide-react";
 
+const CheckoutButton = dynamic(
+  () =>
+    import("@/modules/checkout/ui/components/checkout-button").then(
+      (mod) => mod.CheckoutButton
+    ),
+  {
+    ssr: false,
+    loading: () => (
+      <Button disabled className="bg-white">
+        <ShoppingCartIcon />
+      </Button>
+    ),
+  }
+);
 interface Prop {
   slug: string;
 }
@@ -18,7 +35,10 @@ export const Navbar = ({ slug }: Prop) => {
   return (
     <nav className="h-20 border-b font-medium bg-white">
       <div className="max-w-(--breakpoint-xl) mx-auto flex items-center justify-between h-full px-4 lg:px-12">
-        <Link href={generateTenantURL(slug)} className="flex items-center gap-2">
+        <Link
+          href={generateTenantURL(slug)}
+          className="flex items-center gap-2"
+        >
           {tenant.image?.url && (
             <Image
               src={tenant.image.url}
@@ -30,6 +50,8 @@ export const Navbar = ({ slug }: Prop) => {
           )}
           <p className="text-xl">{tenant.name}</p>
         </Link>
+
+        <CheckoutButton hideIfEmpty tenantSlug={slug} />
       </div>
     </nav>
   );
@@ -38,8 +60,10 @@ export const Navbar = ({ slug }: Prop) => {
 export const NavbarSkeleton = () => {
   return (
     <nav className="h-20 border-b font-medium bg-white">
-      <div className="max-w-(--breakpoint-xl mx-auto flex items-center justify-between h-full px-4 lg:px-12">
-        {/* TODO: Skeleton for checkout button */}
+      <div className="max-w-(--breakpoint-xl mx-auto) flex items-center justify-between h-full px-4 lg:px-12">
+        <Button disabled className="bg-white">
+          <ShoppingCartIcon />
+        </Button>
       </div>
     </nav>
   );
