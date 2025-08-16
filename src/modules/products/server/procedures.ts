@@ -21,6 +21,9 @@ export const productsRouter = createTRPCRouter({
       const prod = await ctx.db.findByID({
         collection: "products",
         id: input.id,
+        select: {
+          content: false
+        }
       });
 
       let isPurchased = false;
@@ -96,7 +99,7 @@ export const productsRouter = createTRPCRouter({
         tenant: prod.tenant as Tenant & { image: Media | null },
         reviewRating,
         reviewCount: reviews.totalDocs,
-        ratingDistribution
+        ratingDistribution,
       };
     }),
   getMany: baseProcedure
@@ -198,6 +201,9 @@ export const productsRouter = createTRPCRouter({
         sort,
         page: input.cursor,
         limit: input.limit,
+        select: {
+          content: false,
+        },
       });
 
       const dataWithSummarizedReviews = await Promise.all(
