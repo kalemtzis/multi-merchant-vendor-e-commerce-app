@@ -42,7 +42,6 @@ const SearchInput = ({ disabled }: Props) => {
       {/* Library button */}
       {session?.user && (
         <Button variant="outline" asChild>
-          {/* TODO: Create library page */}
           <Link prefetch href="/library">
             <BookmarkCheckIcon />
             Library
