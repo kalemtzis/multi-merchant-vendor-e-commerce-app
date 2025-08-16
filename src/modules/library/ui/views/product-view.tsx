@@ -42,9 +42,13 @@ const ProductView = ({ productId }: Props) => {
           </div>
 
           <div className="lg:col-span-5">
-            <div className="font-medium italic text-muted-foreground">
-              No special content
-            </div>
+            {data.content ? (
+              <p>{data.content}</p>
+            ) : (
+              <div className="font-medium italic text-muted-foreground">
+                No special content
+              </div>
+            )}
           </div>
         </div>
       </section>
