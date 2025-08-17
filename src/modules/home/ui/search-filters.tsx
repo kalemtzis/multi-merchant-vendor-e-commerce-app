@@ -7,7 +7,7 @@ import CategoriesBar from "./categories-bar";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useParams } from "next/navigation";
 import BreadcrumbNav from "./breadcrumb-nav";
-import { Category } from "@/payload-types";
+import { CategoriesGetManyOutput } from "@/modules/categories/types";
 
 export const SearchFilters = () => {
   const trpc = useTRPC();
@@ -36,7 +36,7 @@ export const SearchFilters = () => {
     >
       <SearchInput />
       <div className="hidden lg:block">
-        <CategoriesBar data={(data as Category[])} />
+        <CategoriesBar data={(data as CategoriesGetManyOutput)} />
       </div>
       <BreadcrumbNav categoryName={activeCategoryName} category={activeCategory} subcategoryName={activeSubcategoryName} />
     </div>
