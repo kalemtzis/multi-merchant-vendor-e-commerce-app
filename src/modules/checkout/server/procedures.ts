@@ -71,6 +71,11 @@ export const checkoutRouter = createTRPCRouter({
                 equals: input.tenantSlug,
               },
             },
+            {
+              isArchived: {
+                not_equals: true,
+              },
+            },
           ],
         },
       });
@@ -128,24 +133,27 @@ export const checkoutRouter = createTRPCRouter({
 
       const platormFeeAmount = Math.round((totalAmount * PLATFORM_FEE) / 100);
 
-      const checkout = await stripe.checkout.sessions.create({
-        customer_email: ctx.session.user.email,
-        success_url: `${process.env.NEXT_PUBLIC_APP_URL}/tenants/${input.tenantSlug}/checkout?success=true`,
-        cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/tenants/${input.tenantSlug}/checkout?cancel=true`,
-        mode: "payment",
-        line_items: lineItems,
-        invoice_creation: {
-          enabled: true,
+      const checkout = await stripe.checkout.sessions.create(
+        {
+          customer_email: ctx.session.user.email,
+          success_url: `${process.env.NEXT_PUBLIC_APP_URL}/tenants/${input.tenantSlug}/checkout?success=true`,
+          cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/tenants/${input.tenantSlug}/checkout?cancel=true`,
+          mode: "payment",
+          line_items: lineItems,
+          invoice_creation: {
+            enabled: true,
+          },
+          metadata: {
+            userId: ctx.session.user.id,
+          } as CheckoutMetadata,
+          payment_intent_data: {
+            application_fee_amount: platormFeeAmount,
+          },
         },
-        metadata: {
-          userId: ctx.session.user.id,
-        } as CheckoutMetadata,
-        payment_intent_data: {
-          application_fee_amount: platormFeeAmount,
-        },
-      }, {
-        stripeAccount: tenant.stripeAcountId
-      });
+        {
+          stripeAccount: tenant.stripeAcountId,
+        }
+      );
 
       if (!checkout.url)
         throw new TRPCError({
@@ -168,9 +176,18 @@ export const checkoutRouter = createTRPCRouter({
         collection: "products",
         depth: 2,
         where: {
-          id: {
-            in: input.ids,
-          },
+          and: [
+            {
+              id: {
+                in: input.ids,
+              },
+            },
+            {
+              isArchived: {
+                not_equals: true,
+              },
+            },
+          ],
         },
       });
 
