@@ -11,7 +11,7 @@ import { CheckCheckIcon, LinkIcon, StarIcon } from "lucide-react";
 import { Fragment, useState } from "react";
 import { Progress } from "@/components/ui/progress";
 import { toast } from "sonner";
-import { defaultJSXConverters, RichText } from "@payloadcms/richtext-lexical/react";
+import { RichText } from "@payloadcms/richtext-lexical/react";
 
 const CartButton = dynamic(
   () => import("../components/cart-button").then((mod) => mod.CartButton),

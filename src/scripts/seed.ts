@@ -1,5 +1,3 @@
-import { getPayload } from "payload";
-import configPromise from "@payload-config";
 import { payload } from "@/lib/payload";
 import { stripe } from "@/lib/stripe";
 

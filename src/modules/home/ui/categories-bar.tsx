@@ -1,10 +1,9 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import React, { useEffect, useRef, useState, useCallback } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import DropdownCategoryMenu from "./dropdown-category-menu";
 import { cn } from "@/lib/utils";
-import { Category } from "@/payload-types";
 import { useParams } from "next/navigation";
 import CategoriesSidebar from "./categories-sidebar";
 import { ListFilterIcon } from "lucide-react";

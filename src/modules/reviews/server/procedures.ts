@@ -1,5 +1,4 @@
 import {
-  baseProcedure,
   createTRPCRouter,
   protectedProcedure,
 } from "@/trpc/init";

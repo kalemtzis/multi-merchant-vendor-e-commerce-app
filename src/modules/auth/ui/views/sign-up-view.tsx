@@ -21,7 +21,7 @@ import { Input } from "@/components/ui/input";
 import { useTRPC } from "@/trpc/client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { redirect, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 const poppins = Poppins({
   weight: ["700"],

@@ -12,9 +12,9 @@ import {
 import { CategoriesGetManyOutput } from "@/modules/categories/types";
 import { useTRPC } from "@/trpc/client";
 import { useQuery } from "@tanstack/react-query";
-import { ChevronRightIcon, ChevronLeftIcon } from "lucide-react";
+import { ChevronRightIcon } from "lucide-react";
 import Link from "next/link";
-import { useParams, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 interface Props {
@@ -38,11 +38,7 @@ const CategoriesSidebar = ({ open, onOpenChange }: Props) => {
   >(null);
 
   const currentCategories = parentCategories ?? categories ?? [];
-
-  const params = useParams();
-  const categoryParam = params.category as string | undefined;
-  const activeCategory = categories?.find((cat) => cat.slug === categoryParam);
-
+  
   const handleOpenChange = (open: boolean) => {
     setSelectedCategory(null);
     setParentCategories(null);

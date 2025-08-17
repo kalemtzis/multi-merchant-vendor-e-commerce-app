@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { ChevronDownIcon, ChevronRightIcon, Key } from "lucide-react";
+import { ChevronDownIcon, ChevronRightIcon } from "lucide-react";
 import { useState } from "react";
 import { PriceFilter } from "./price-filter";
 import { useProductFilters } from "../../hooks/use-product-filters";

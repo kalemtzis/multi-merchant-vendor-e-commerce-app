@@ -6,6 +6,8 @@ import { DEFAULT_LIMIT } from "@/constants";
 import { HydrationBoundary, dehydrate } from '@tanstack/react-query';
 import { Suspense } from "react";
 
+export const dynamic = "force-dynamic";
+
 interface Props {
   searchParams: Promise<SearchParams>;
   params: Promise<{ slug: string }>;

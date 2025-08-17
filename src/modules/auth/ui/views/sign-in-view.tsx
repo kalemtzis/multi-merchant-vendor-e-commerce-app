@@ -2,12 +2,11 @@
 
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { loginSchema, registerSchema } from "../../schemas";
+import { loginSchema } from "../../schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -21,7 +20,7 @@ import { Input } from "@/components/ui/input";
 import { useTRPC } from "@/trpc/client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { redirect, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 const poppins = Poppins({
   weight: ["700"],
